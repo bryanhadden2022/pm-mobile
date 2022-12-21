@@ -25,7 +25,7 @@ export default function LoginScreen(props) {
 
     dispatch(login(user))
     props.navigation.navigate('Home')
-  }
+  } 
 
   useEffect(() => {
   }, [loggedIn])

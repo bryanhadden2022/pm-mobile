@@ -1,16 +1,3 @@
-// ericholthaus
-// 109343485026098492
-
-// name: accountResJson.display_name,
-// username: accountResJson.username,
-// note: accountResJson.note,
-// followersCount: accountResJson.followers_count,
-// followingCount: accountResJson.following_count,
-// img: accountResJson.avatar_static,
-// joined: accountResJson.created_at,
-// followers: [followersResJson],
-// timelineList: timelineResJson,
-
 import {
     View,
     Text,
@@ -27,62 +14,75 @@ const fallbackAvatar =
 
 export default function Timeline(props) {
     const { name, followers, timelineList } = useSelector(state => state.auth.user)
+    const { overRideTimeline } = props
 
     return (
         <FlatList
-            data={timelineList}
+            data={overRideTimeline || timelineList}
             renderItem={({ item, index, separators }) => {
+                const isReblogged = item.content.length === 0
+                const itemtemp = isReblogged ? item.reblog : item
                 const {
                     content,
+                    created_at,
                     account: { avatar_static, username, display_name },
-                } = item;
+                } = itemtemp;
 
                 return (
-                    <Pressable onPress={() => props.navigation.navigate('Post', { profile: item.account, post: item })} >
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={StyleSheet.container}>
-                            <View
-                                style={{
-                                    border: 1,
-                                    borderColor: 'black',
-                                    borderWidth: 1,
-                                    backgroundColor: 'white',
-                                    padding: 20,
-                                    marginVertical: 8,
-                                    marginHorizontal: 16,
-                                    width: 350,
-                                    borderRadius: 5,
-                                }}>
-                                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <Image
-                                        source={{
-                                            uri: avatar_static?.includes('missing')
-                                                ? fallbackAvatar
-                                                : avatar_static,
-                                        }}
-                                        style={{
-                                            width: 45,
-                                            height: 45,
-                                            marginRight: 10,
-                                            marginBottom: 5,
-                                            borderRadius: 5
-                                        }}
-                                    />
+                    <>
+                        <Pressable onPress={() => props.navigation.navigate('Post', { profile: item.account, post: item })} >
+                            <ScrollView
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={StyleSheet.container}>
+                                <View
+                                    style={{
+                                        border: 1,
+                                        borderColor: 'black',
+                                        borderWidth: 1,
+                                        backgroundColor: 'white',
+                                        padding: 20,
+                                        marginVertical: 8,
+                                        marginHorizontal: 16,
+                                        width: 350,
+                                        borderRadius: 5,
+                                    }}>
+                                    {isReblogged && (<Text style={{ ...styles.username, paddingBottom: 10 }}>
+                                        <Text style={styles.username}>{item.account.display_name}</Text> boosted
+                                    </Text>)}
+                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                        <Image
+                                            source={{
+                                                uri: avatar_static?.includes('missing')
+                                                    ? fallbackAvatar
+                                                    : avatar_static,
+                                            }}
+                                            style={{
+                                                width: 45,
+                                                height: 45,
+                                                marginRight: 10,
+                                                marginBottom: 5,
+                                                borderRadius: 5
+                                            }}
+                                        />
+                                        <View>
+                                            {/* <Text style={{ fontSize: 7 }}>{created_at.replace('', '')}</Text> */}
+                                            <Text style={styles.name}>
+                                                {display_name}
+                                            </Text>
+                                            <Text style={styles.username}>
+                                                @{username}
+                                            </Text>
+                                        </View>
+                                    </View>
                                     <View>
-                                        <Text style={styles.name}>{display_name}</Text>
-                                        <Text style={styles.username}>@{username}</Text>
+                                        <View>
+                                            <Text>{content.replace(/<[^>]+>/g, '')}</Text>
+                                        </View>
                                     </View>
                                 </View>
-                                <View>
-                                    <View>
-                                        <Text>{content.replace(/<[^>]+>/g, '')}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </ScrollView>
-                    </Pressable>
+                            </ScrollView>
+                        </Pressable></>
                 )
             }}
             keyExtractor={item => item.id}
