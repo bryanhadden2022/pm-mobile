@@ -1,12 +1,11 @@
 import {
     View,
     Text,
-    FlatList,
-    StyleSheet,
-    ScrollView,
     Image,
     Pressable,
 } from 'react-native';
+import styles from './styles'
+
 import { useSelector } from 'react-redux';
 
 export default function ProfileScreen(props) {
@@ -15,18 +14,7 @@ export default function ProfileScreen(props) {
 
     return (
         <Pressable onPress={() => props.navigation.navigate('Profile', { profile: post.account })} >
-            <View
-                style={{
-                    border: 1,
-                    borderColor: 'black',
-                    borderWidth: 1,
-                    backgroundColor: 'white',
-                    padding: 20,
-                    marginVertical: 8,
-                    marginHorizontal: 16,
-                    width: 350,
-                    borderRadius: 5,
-                }}>
+            <View style={styles.postContainer}>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                     <Image
                         source={{
@@ -51,21 +39,11 @@ export default function ProfileScreen(props) {
                     <Text>{post.content.replace(/<[^>]+>/g, '')}</Text>
                 </View>
             </View>
-            <View style={{
-                backgroundColor: 'white',
-                padding: 20,
-                marginVertical: 8,
-                marginHorizontal: 16,
-                width: 350,
-                borderRadius: 5,
-            }}>
-                <Text style={{
-                    color: 'gray'
-                }}>No Replies Yet</Text>
+            <View style={styles.commentsContainer}>
+                <Text style={styles.commentsText}>No Replies Yet</Text>
             </View>
         </Pressable>
 
     );
 }
 
-const styles = StyleSheet.create({});
