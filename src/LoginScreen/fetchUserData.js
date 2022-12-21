@@ -23,6 +23,7 @@ export default async function fetchUserData(username, password) {
 
     return {
         name: accountResJson.display_name,
+        id: accountResJson.id,
         username: accountResJson.username,
         note: accountResJson.note,
         followersCount: accountResJson.followers_count,

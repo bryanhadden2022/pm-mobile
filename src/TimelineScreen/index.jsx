@@ -14,11 +14,11 @@ const fallbackAvatar =
 
 export default function Timeline(props) {
     const { name, followers, timelineList } = useSelector(state => state.auth.user)
-    const { overRideTimeline } = props
+    const { shouldOverrideTimeline } = props
 
     return (
         <FlatList
-            data={overRideTimeline || timelineList}
+            data={shouldOverrideTimeline || timelineList}
             renderItem={({ item, index, separators }) => {
                 const isReblogged = item.content.length === 0
                 const itemtemp = isReblogged ? item.reblog : item
