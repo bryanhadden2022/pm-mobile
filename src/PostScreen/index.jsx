@@ -14,7 +14,7 @@ export default function ProfileScreen(props) {
     const { profile, post } = props.route.params
 
     return (
-        <View>
+        <Pressable onPress={() => props.navigation.navigate('Profile', { profile: post.account })} >
             <View
                 style={{
                     border: 1,
@@ -63,7 +63,7 @@ export default function ProfileScreen(props) {
                     color: 'gray'
                 }}>No Replies Yet</Text>
             </View>
-        </View>
+        </Pressable>
 
     );
 }

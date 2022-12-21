@@ -10,8 +10,10 @@ import fetchUserData from './fetchUserData'
 import { login } from '../redux/slices/authorize'
 
 export default function LoginScreen(props) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  // ericholthaus
+  // 109343485026098492
+  const [username, setUsername] = useState('ericholthaus');
+  const [password, setPassword] = useState('109343485026098492');
 
   const state = useSelector(state => state);
   const loggedIn = useSelector(state => state.auth.user.loggedIn)
