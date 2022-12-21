@@ -1,18 +1,16 @@
-import React from 'react';
-import {View, Text, Pressable, TextInput} from 'react-native';
+import { View, Text } from 'react-native';
+import { useSelector } from 'react-redux';
+import styles from './style'
 
-function Loading() {
+export default function Loading() {
+  const loading = useSelector(state => state.app.loading);
+
+  if (!loading) return <></>
+
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontWeight: '500',
-        position: 'absolute',
-        top: '37%',
-      }}>
-      <Text style={{fontSize: 15, fontWeight: '500'}}>LOADING...</Text>
+    <View style={styles.loading}>
+      <Text style={{ fontSize: 15, fontWeight: '500' }}>Loading</Text>
     </View>
-  );
+  )
 }
+

@@ -1,133 +1,56 @@
-import React, {useEffect, useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {View, Text, Pressable, TextInput} from 'react-native';
-import {authorize as authorizeAction, setUser} from '../redux/slices/authorize';
-import {fetchData} from './helpers';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { View, Text, Pressable, TextInput } from 'react-native';
+import { styles } from './style'
+import Loading from '../Generic/Loading'
+import Errors from '../Generic/Errors'
+
+// helpers & slices
+import fetchUserData from './fetchUserData'
+import { login } from '../redux/slices/authorize'
 
 export default function LoginScreen(props) {
-  const loggedIn = useSelector(state => state.auth.loggedIn);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const state = useSelector(state => state);
+  const loggedIn = useSelector(state => state.auth.user.loggedIn)
+
   const dispatch = useDispatch();
-  async function login(userObj) {
-    dispatch(setUser(userObj));
-  }
-
-  const [name, onChangeName] = useState('ericholthaus');
-  const [text, onChangeText] = useState('109343485026098492');
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [userObj, setUserObj] = useState(null);
-
   async function handleLogin() {
-    try {
-      setLoading(true);
-      await fetchData(text, setUserObj, setLoading);
-      setLoading(false);
+    // figure out why the res object weird? 
+    const user = await fetchUserData(username, password)
 
-      await login(userObj);
-
-      if (loggedIn && userObj) {
-        setError(false);
-        dispatch(authorizeAction());
-        props.navigation.navigate('Home');
-      } else {
-        setError(true);
-      }
-    } catch (error) {
-      setError(true);
-      throw error;
-    }
+    dispatch(login(user))
+    props.navigation.navigate('Home')
   }
 
   useEffect(() => {
-    return () => {
-      setError(false);
-      setLoading(false);
-      onChangeName('');
-      onChangeText('');
-    };
-  }, []);
+  }, [loggedIn])
 
   return (
     <View
-      style={{
-        flex: 1,
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      {loading && (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: '500',
-            position: 'absolute',
-            top: '37%',
-          }}>
-          <Text style={{fontSize: 15, fontWeight: '500'}}>LOADING...</Text>
-        </View>
-      )}
-      {!loading && error && (
-        <Text
-          style={{
-            color: 'red',
-            fontWeight: '500',
-            marginBottom: 15,
-            fontSize: 15,
-            position: 'absolute',
-            top: '37%',
-          }}>
-          Incorrect Login. Please Try Again.
-        </Text>
-      )}
+      style={styles.container}>
+      <Loading />
+      <Errors />
       <TextInput
-        style={{
-          width: '75%',
-          color: 'gray',
-          border: 1,
-          borderWidth: 1,
-          borderColor: 'gray',
-          borderRadius: 5,
-          padding: 5,
-          marginBottom: 15,
-        }}
+        style={styles.input}
         placeholder="username"
         keyboardType="numeric"
-        onChangeText={onChangeName}
-        value={name}
+        onChangeText={setUsername}
+        value={username}
       />
       <TextInput
-        style={{
-          width: '75%',
-          color: 'gray',
-          border: 1,
-          borderWidth: 1,
-          borderColor: 'gray',
-          borderRadius: 5,
-          padding: 5,
-          marginBottom: 15,
-        }}
+        style={styles.input}
         placeholder="password"
         keyboardType="numeric"
-        onChangeText={onChangeText}
-        value={text}
+        onChangeText={setPassword}
+        value={password}
       />
       <Pressable
         onPress={handleLogin}
-        style={{
-          backgroundColor: '#f4c430',
-          width: '75%',
-          border: 1,
-          borderWidth: 1,
-          borderColor: 'gray',
-          borderRadius: 5,
-          padding: 5,
-          marginBottom: 15,
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-        <Text style={{color: 'white', fontWeight: '500'}}>Login</Text>
+        style={styles.submit}>
+        <Text style={styles.submitText}>Login</Text>
       </Pressable>
     </View>
   );
