@@ -2,19 +2,32 @@ import {
     View,
     Text,
     FlatList,
-    StyleSheet,
     ScrollView,
     Image,
     Pressable,
 } from 'react-native';
 import { useSelector } from 'react-redux';
+import styles from './styles'
 
 const fallbackAvatar =
     'https://renderer-v2.vercel.app/_next/image?url=https%3A%2F%2Fapi.typedream.com%2Fv0%2Fdocument%2Fpublic%2Fffd19e6e-3cf5-49a2-985c-8086255e3a33%2F2H5X0HKQFSZYSTHAqGYlzKycibD_Project_Mush_Logo-01.png%3Fbucket%3Ddocument&w=256&q=100';
 
 export default function Timeline(props) {
-    const { name, followers, timelineList } = useSelector(state => state.auth.user)
+    const { name, followers, timelineList, username } = useSelector(state => state.auth.user)
     const { shouldOverrideTimeline } = props
+
+    function handleTimelinePress(props, item) {
+        // take the user to their own post
+        const itsOneOfMyPosts = item.account.username === username && !item.reblog
+        if (itsOneOfMyPosts) {
+            props.navigation.navigate('Post', { profile: item.account, post: item })
+        }
+
+        // take the user to someone else's post (the post they boosted in this case)
+        props.navigation.navigate('Post', {
+            profile: item.reblog.account, post: item.reblog
+        })
+    }
 
     return (
         <FlatList
@@ -30,11 +43,11 @@ export default function Timeline(props) {
 
                 return (
                     <>
-                        <Pressable onPress={() => props.navigation.navigate('Post', { profile: item.account, post: item })} >
+                        <Pressable onPress={() => handleTimelinePress(props, item)} >
                             <ScrollView
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={StyleSheet.container}>
+                                contentContainerStyle={styles.container}>
                                 <View
                                     style={{
                                         border: 1,
@@ -48,7 +61,8 @@ export default function Timeline(props) {
                                         borderRadius: 5,
                                     }}>
                                     {isReblogged && (<Text style={{ ...styles.username, paddingBottom: 10 }}>
-                                        <Text style={styles.username}>{item.account.display_name}</Text> boosted
+                                        <Text style={styles.username}>{item.account.display_name}</Text>
+                                        {' '}boosted
                                     </Text>)}
                                     <View style={{ display: 'flex', flexDirection: 'row' }}>
                                         <Image
@@ -89,16 +103,3 @@ export default function Timeline(props) {
         />
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    name: {
-        fontSize: 20,
-    },
-    username: {
-        fontSize: 15,
-        color: 'gray'
-    },
-});
