@@ -23,6 +23,35 @@ export const styles = StyleSheet.create({
   commentsText: {
     color: 'gray',
   },
+  commentsInput: {
+    border: 1,
+    borderColor: 'lightgray',
+    borderWidth: 1,
+    height: 125,
+    textAlignVertical: 'top',
+    padding: 10,
+  },
+  settingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginTop: 15
+  },
+  submit: {
+    backgroundColor: 'white',
+    width: 125,
+    border: 1,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 5,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  submitText: {
+    color: 'black', 
+    fontWeight: '600',
+  }
 });
 
 export default styles

@@ -12,8 +12,8 @@ import { login } from '../redux/slices/authorize'
 export default function LoginScreen(props) {
   // ericholthaus
   // 109343485026098492
-  const [username, setUsername] = useState('ericholthaus');
-  const [password, setPassword] = useState('109343485026098492');
+  const [username, setUsername] = useState('ayochrisknows');
+  const [password, setPassword] = useState('109349413996053784');
 
   const state = useSelector(state => state);
   const loggedIn = useSelector(state => state.auth.user.loggedIn)

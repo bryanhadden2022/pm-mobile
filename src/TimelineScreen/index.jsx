@@ -7,6 +7,16 @@ import {
     Pressable,
 } from 'react-native';
 import { useSelector } from 'react-redux';
+import TimeAgo from 'javascript-time-ago'
+
+// English.
+import en from 'javascript-time-ago/locale/en'
+
+TimeAgo.addLocale(en)
+
+// Create formatter (English).
+const timeAgo = new TimeAgo('en-US')
+
 import styles from './styles'
 
 const fallbackAvatar =
@@ -16,17 +26,27 @@ export default function Timeline(props) {
     const { name, followers, timelineList, username } = useSelector(state => state.auth.user)
     const { shouldOverrideTimeline } = props
 
-    function handleTimelinePress(props, item) {
+    function handleTimelinePress(props, item, isComment) {
         // take the user to their own post
-        const itsOneOfMyPosts = item.account.username === username && !item.reblog
+        // const itsOneOfMyPosts = item.account.username === username && !item?.reblog && !item?.reblog?.account
+        const itsOneOfMyPosts = !Boolean(item?.reblog?.account)
         if (itsOneOfMyPosts) {
-            props.navigation.navigate('Post', { profile: item.account, post: item })
+            props.navigation.navigate('Post', {
+                profile: item.account,
+                post: item,
+                isComment,
+                postId: item.id
+            })
         }
-
-        // take the user to someone else's post (the post they boosted in this case)
-        props.navigation.navigate('Post', {
-            profile: item.reblog.account, post: item.reblog
-        })
+        if (!itsOneOfMyPosts) {
+            // take the user to someone else's post (the post they boosted in this case)
+            props.navigation.navigate('Post', {
+                profile: item.reblog.account,
+                post: item.reblog,
+                isComment,
+                postId: item.reblog.id
+            })
+        }
     }
 
     return (
@@ -42,45 +62,44 @@ export default function Timeline(props) {
                 } = itemtemp;
 
                 return (
-                    <>
-                        <Pressable onPress={() => handleTimelinePress(props, item)} >
-                            <ScrollView
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={styles.container}>
-                                <View
-                                    style={{
-                                        border: 1,
-                                        borderColor: 'black',
-                                        borderWidth: 1,
-                                        backgroundColor: 'white',
-                                        padding: 20,
-                                        marginVertical: 8,
-                                        marginHorizontal: 16,
-                                        width: 350,
-                                        borderRadius: 5,
-                                    }}>
-                                    {isReblogged && (<Text style={{ ...styles.username, paddingBottom: 10 }}>
-                                        <Text style={styles.username}>{item.account.display_name}</Text>
-                                        {' '}boosted
-                                    </Text>)}
-                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <Image
-                                            source={{
-                                                uri: avatar_static?.includes('missing')
-                                                    ? fallbackAvatar
-                                                    : avatar_static,
-                                            }}
-                                            style={{
-                                                width: 45,
-                                                height: 45,
-                                                marginRight: 10,
-                                                marginBottom: 5,
-                                                borderRadius: 5
-                                            }}
-                                        />
-                                        <View>
-                                            {/* <Text style={{ fontSize: 7 }}>{created_at.replace('', '')}</Text> */}
+                    <Pressable onPress={() => handleTimelinePress(props, item)} >
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.container}>
+                            <View
+                                style={{
+                                    border: 1,
+                                    borderColor: 'black',
+                                    borderWidth: 1,
+                                    backgroundColor: 'white',
+                                    padding: 20,
+                                    marginVertical: 8,
+                                    marginHorizontal: 16,
+                                    width: 350,
+                                    borderRadius: 5,
+                                }}>
+                                {isReblogged && (<Text style={{ ...styles.username, paddingBottom: 10 }}>
+                                    <Text style={styles.username}>{item.account.display_name}</Text>
+                                    {' '}boosted
+                                </Text>)}
+                                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Image
+                                        source={{
+                                            uri: avatar_static?.includes('missing')
+                                                ? fallbackAvatar
+                                                : avatar_static,
+                                        }}
+                                        style={{
+                                            width: 45,
+                                            height: 45,
+                                            marginRight: 10,
+                                            marginBottom: 5,
+                                            borderRadius: 5
+                                        }}
+                                    />
+                                    <View style={{ display: 'flex', flexDirection: 'row', width: '100%', alignContent: 'flex-end' }}>
+                                        <View style={{ flex: 1.5 }}>
                                             <Text style={styles.name}>
                                                 {display_name}
                                             </Text>
@@ -88,15 +107,22 @@ export default function Timeline(props) {
                                                 @{username}
                                             </Text>
                                         </View>
-                                    </View>
-                                    <View>
-                                        <View>
-                                            <Text>{content.replace(/<[^>]+>/g, '')}</Text>
-                                        </View>
+                                        <Text style={{ fontSize: 9, flex: 1, color: 'gray' }}>{timeAgo.format(new Date(created_at))}</Text>
                                     </View>
                                 </View>
-                            </ScrollView>
-                        </Pressable></>
+                                <View style={{marginTop: 10}}>
+                                    <Text>{content.replace(/<[^>]+>/g, '')}</Text>
+                                </View>
+                                <View style={styles.settingContainer}>
+                                    <Pressable
+                                        onPress={() => handleTimelinePress(props, item, true)}
+                                        style={styles.submit}>
+                                        <Text style={styles.submitText}>Reply</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </ScrollView>
+                    </Pressable>
                 )
             }}
             keyExtractor={item => item.id}

@@ -45,6 +45,7 @@ export default function ProfileScreen(props) {
         ? img || fallback_avatar
         : profile.avatar_static
 
+        
     return (
         <View style={styles.container}>
             <View style={styles.profileHeaderContainer}>
