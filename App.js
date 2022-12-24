@@ -8,19 +8,8 @@ import ProfileScreen from './src/ProfileScreen';
 import PostScreen from './src/PostScreen';
 import SettingsScreen from './src/SettingsScreen';
 import { useSelector } from 'react-redux';
+import Home from './src/Screens/Home'
 
-// handle bottom screen navigator
-function Home() {
-  const Tab = createBottomTabNavigator();
-
-  return (
-    <Tab.Navigator screenOptions={{ activeTintColor: '#101010' }}>
-      <Tab.Screen name="Feed" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
-}
 
 // handle logged in/logged out screens
 function Auth() {
