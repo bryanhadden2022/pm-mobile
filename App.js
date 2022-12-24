@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider as StoreProvider } from 'react-redux';
 import LoginScreen from './src/LoginScreen';
 import HomeScreen from './src/HomeScreen';
 import ProfileScreen from './src/ProfileScreen';
