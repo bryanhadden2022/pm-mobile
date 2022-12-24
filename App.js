@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './src/LoginScreen';
-import HomeScreen from './src/HomeScreen';
 import ProfileScreen from './src/ProfileScreen';
 import PostScreen from './src/PostScreen';
 import SettingsScreen from './src/SettingsScreen';
@@ -23,8 +22,8 @@ function Auth() {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ headerShown: false }} />
-        <Stack.Screen name='Public' component={HomeScreen} />
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Post" component={PostScreen} />
       </Stack.Group>

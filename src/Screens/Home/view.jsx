@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { View, Text, Pressable, TextInput } from 'react-native';
+import styles from './styles'
 import Timeline from '../../TimelineScreen'
 import CurrentUserCard from '../../CurrentUserCard'
-import styles from './styles'
 import { addCommentQuery, headers } from '../../Generic/consts'
 
 export default function HomeScreen(props) {

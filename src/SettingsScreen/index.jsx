@@ -1,7 +1,9 @@
 import {
     View,
     Text,
-    Pressable
+    Pressable,
+    ScrollView,
+    Image
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/authorize'
@@ -17,15 +19,42 @@ export default function HomeScreen(props) {
 
 
     return (
-        <View style={styles.container}>
-            {/* <CurrentUserCard /> */}
-            <View style={styles.settingContainer}>
+        <View style={{
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: 'white',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}>
+            <View style={{
+                display: 'flex',
+                flexDirection: 'row',
+                border: 0,
+                paddingTop: 15,
+                paddingBottom: 15
+            }}>
+                <Image
+                    source={{ uri: img?.includes('missing') ? fallbackAvatar : img }}
+                    style={{ width: 75, height: 75 }}
+                />
+                <View style={{ display: 'flex', flexDirection: 'row', width: 200 }}>
+                    <View style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                        <Text style={styles.profileHeaderTitle}>{name}</Text>
+                        <Text style={{ marginTop: 1, marginBottom: 2, color: 'gray' }}>@{username}</Text>
+                        <View style={{ display: 'flex', flexDirection: 'row' }}>
+                            <Text>Followers: {followersCount}</Text>
+                            <Text style={{ marginLeft: 5 }}>Following: {followingCount}</Text>
+                        </View>
+                    </View>
+                </View>
+            </View>
+            <View>
                 <Pressable
                     onPress={() => {
                         dispatch(logout())
                         props.navigation.navigate('Login')
                     }}
-                    style={styles.submit}>
+                    style={{ ...styles.submit, width: 100 }}>
                     <Text style={styles.submitText}>Logout</Text>
                 </Pressable>
             </View>
