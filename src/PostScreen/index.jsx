@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import styles from './styles'
 import TimeAgo from 'javascript-time-ago'
+import Post from '../Post'
 
 // English.
 import en from 'javascript-time-ago/locale/en'
@@ -102,50 +103,7 @@ export default function PostScreen(props) {
 
     return (
         <>
-            <Pressable onPress={() => props.navigation.navigate('Profile', { profile: post.account })} >
-                <View style={styles.postContainer}>
-                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Image
-                            source={{
-                                uri: post.account.avatar_static?.includes('missing')
-                                    ? fallbackAvatar
-                                    : post.account.avatar_static,
-                            }}
-                            style={{
-                                width: 45,
-                                height: 45,
-                                marginRight: 10,
-                                marginBottom: 5,
-                                borderRadius: 5
-                            }}
-                        />
-                        <View style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-                            <View>
-                                <Text style={styles.name}>{post.account.display_name}</Text>
-                                <Text style={styles.username}>@{post.account.username}</Text>
-                            </View>
-                            <Text style={{ marginLeft: 65, color: 'gray' }}>{created}</Text>
-                        </View>
-                    </View>
-                    <View>
-                        <Text>{post.content.replace(/<[^>]+>/g, '')}</Text>
-                    </View>
-                    {/* <View style={{
-                        display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10
-                    }}>
-                        <Text>Reblogs</Text>
-                        <Text>Reblogs</Text>
-                        <Text>Reblogs</Text>
-                    </View> */}
-                    {!creatingComment && (<View style={styles.settingContainer}>
-                        <Pressable
-                            onPress={() => setCreatingComment(true)}
-                            style={{ ...styles.submit, backgroundColor: '#f4c430' }}>
-                            <Text style={{ ...styles.submitText, color: 'white' }}>Reply</Text>
-                        </Pressable>
-                    </View>)}
-                </View>
-            </Pressable>
+            <Post {...props} item={post} handleCommentRemove={handleCommentRemove} />
             <View style={styles.commentsContainer}>
                 {/* <Text style={styles.commentsText}>No Replies Yet</Text> */}
                 {creatingComment && (
@@ -178,65 +136,7 @@ export default function PostScreen(props) {
                     <FlatList
                         data={mentions}
                         renderItem={({ item, index, separators }) => {
-                            const isReblogged = item.content.length === 0
-                            const itemtemp = isReblogged ? item.reblog : item
-                            const {
-                                content,
-                                created_at,
-                                account: { avatar_static, username, display_name },
-                            } = itemtemp;
-
-                            return (
-                                <View style={{
-                                    border: 1,
-                                    borderColor: 'lightgray',
-                                    borderWidth: 1,
-                                    borderRadius: 5,
-                                    padding: 15,
-                                    width: 310,
-                                    marginBottom: 15
-                                }}>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image
-                                            source={{
-                                                uri: avatar_static?.includes('missing')
-                                                    ? fallbackAvatar
-                                                    : avatar_static,
-                                            }}
-                                            style={{
-                                                width: 45,
-                                                height: 45,
-                                                marginRight: 10,
-                                                marginBottom: 5,
-                                                borderRadius: 5
-                                            }}
-                                        />
-                                        <View style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-                                            <View>
-                                                <Text style={styles.name}>
-                                                    {display_name}
-                                                </Text>
-                                                <Text style={styles.username}>
-                                                    @{username}
-                                                </Text>
-                                            </View>
-                                            <Text style={{ fontSize: 9, marginLeft: 55 }}>{timeAgo.format(new Date(created_at))}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ display: 'flex' }}>
-                                        <Text style={{ color: 'gray', marginTop: 4 }}>{content.replace(/<[^>]+>/g, '')}</Text>
-                                    </View>
-                                    {username === curreUserName &&
-                                        (<View style={styles.settingContainer}>
-                                            <Pressable
-                                                onPress={() => handleCommentRemove(itemtemp.id)}
-                                                style={styles.submit}>
-                                                <Text style={styles.submitText}>Delete</Text>
-                                            </Pressable>
-                                        </View>)}
-                                </View>
-
-                            )
+                            return <Post {...props} item={item} isComment={true} handleCommentRemove={handleCommentRemove} />
                         }}
                         keyExtractor={item => item.id}
                     />

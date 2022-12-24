@@ -1,61 +1,62 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-} from 'react-native';
-import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react'
+import { View, Text, Pressable, TextInput } from 'react-native';
 import Timeline from '../TimelineScreen'
+import CurrentUserCard from '../CurrentUserCard'
 import styles from './styles'
-
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-const Tab = createBottomTabNavigator();
-
-function MyTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
-}
+import { addCommentQuery, headers } from '../Generic/consts'
 
 export default function HomeScreen(props) {
-  const { name, followingCount, img, followersCount, username } = useSelector(state => state.auth.user)
+  const [creatingPost, setCreatingPost] = useState(false)
+  const [commentText, setCommentText] = useState('')
 
-  const fallbackAvatar =
-    'https://renderer-v2.vercel.app/_next/image?url=https%3A%2F%2Fapi.typedream.com%2Fv0%2Fdocument%2Fpublic%2Fffd19e6e-3cf5-49a2-985c-8086255e3a33%2F2H5X0HKQFSZYSTHAqGYlzKycibD_Project_Mush_Logo-01.png%3Fbucket%3Ddocument&w=256&q=100';
+  async function handlePostAdd() {
+    try {
+      let res = await fetch(addCommentQuery, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          status: commentText,
+        }),
+      })
+      if (res.status === 200) {
+        setCommentText('')
+        setCreatingPost(false)
+      } else {
+        console.log("Some error occured");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    console.log('test')  
+  }, [])
 
   return (
     <View style={styles.container}>
-      <View style={styles.profileHeaderContainer}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.scrollView}>
-          <View style={styles.profileHeaderMeta}>
-            <Image
-              source={{
-                uri: img?.includes('missing')
-                  ? fallbackAvatar
-                  : img,
-              }}
-              style={styles.profileHeaderImg}
-            />
-            <View style={styles.profileHeaderMetaContainer}>
-              <Text style={styles.profileHeaderTitle}>{name}</Text>
-              <Text style={styles.profileHeaderSubtitle}>
-                @{username}
-              </Text>
-              <View style={styles.profileHeaderFollowerContainer}>
-                <Text style={styles.profileHeaderFollowers}>Followers: {followersCount}</Text>
-                <Text>Following: {followingCount}</Text>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-      </View>
+      <CurrentUserCard setCreatingPost={setCreatingPost} creatingPost={creatingPost} />
+      {creatingPost && (<>
+        < TextInput
+          onChangeText={setCommentText}
+          style={{ ...styles.commentsInput, backgroundColor: 'white' }}
+          multiline={true}
+          numberOfLines={10}
+        />
+        <View style={{ ...styles.settingContainer, marginBottom: 15, flexDirection: 'row' }}>
+          <Pressable
+            onPress={() => setCreatingPost(false)}
+            style={styles.submit}>
+            <Text style={styles.submitText}>Cancel</Text>
+          </Pressable>
+          <View style={{ width: 15 }}></View>
+          <Pressable
+            onPress={() => handlePostAdd()}
+            style={{ ...styles.submit, backgroundColor: '#f4c430' }}>
+            <Text style={{ ...styles.submitText, color: 'white' }}>Post</Text>
+          </Pressable>
+        </View>
+      </>)}
       <Timeline {...props} />
     </View>
   );

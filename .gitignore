@@ -60,3 +60,4 @@ ios/DerivedData/
 *.apk
 *.ap_
 __tests__/App-test.js
+src/Post/index.js

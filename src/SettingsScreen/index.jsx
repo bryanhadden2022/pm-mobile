@@ -1,13 +1,12 @@
 import {
     View,
     Text,
-    ScrollView,
-    Image,
     Pressable
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/authorize'
 import styles from './styles'
+import CurrentUserCard from '../CurrentUserCard'
 
 export default function HomeScreen(props) {
     const dispatch = useDispatch();
@@ -19,33 +18,7 @@ export default function HomeScreen(props) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.profileHeaderContainer}>
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollView}>
-                    <View style={styles.profileHeaderMeta}>
-                        <Image
-                            source={{
-                                uri: img?.includes('missing')
-                                    ? fallbackAvatar
-                                    : img,
-                            }}
-                            style={styles.profileHeaderImg}
-                        />
-                        <View style={styles.profileHeaderMetaContainer}>
-                            <Text style={styles.profileHeaderTitle}>{name}</Text>
-                            <Text style={styles.profileHeaderSubtitle}>
-                                @{username}
-                            </Text>
-                            <View style={styles.profileHeaderFollowerContainer}>
-                                <Text style={styles.profileHeaderFollowers}>Followers: {followersCount}</Text>
-                                <Text>Following: {followingCount}</Text>
-                            </View>
-                        </View>
-                    </View>
-                </ScrollView>
-            </View>
+            {/* <CurrentUserCard /> */}
             <View style={styles.settingContainer}>
                 <Pressable
                     onPress={() => {
