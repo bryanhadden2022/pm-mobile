@@ -86,7 +86,7 @@ export default function PostScreen(props) {
         };
         const base = 'https://projectmushroom.social';
         // const query4 = `${base}/api/v1/accounts/${profile?.id || stateuser.id}/statuses`;
-        const query = 'https://projectmushroom.social/api/v1/statuses/109549780438552076/context';
+        const query = `https://projectmushroom.social/api/v1/statuses/${postId}/context`;
         const res = await fetch(query, options)
 
         const json = await res.json()
@@ -136,7 +136,12 @@ export default function PostScreen(props) {
                     <FlatList
                         data={mentions}
                         renderItem={({ item, index, separators }) => {
-                            return <Post {...props} item={item} isComment={true} handleCommentRemove={handleCommentRemove} />
+                            return <Post
+                                {...props}
+                                item={item}
+                                isComment={true}
+                                handleCommentRemove={handleCommentRemove}
+                            />
                         }}
                         keyExtractor={item => item.id}
                     />

@@ -6,16 +6,18 @@ import {
     Pressable,
 } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useNavigation, NavigationContainer } from '@react-navigation/native';
-import styles from './styles'
+import { useNavigation } from '@react-navigation/native';
 
 export default function CurrentUserCard(props) {
-    const { name, followingCount, img, followersCount, username } = useSelector(state => state.auth.user)
-    const { setCreatingPost, creatingPost } = props
+    const { name } = useSelector(state => state.auth.user)
+    const { setCreatingPost } = props
     const navigation = useNavigation();
-
     const fallbackAvatar =
         'https://renderer-v2.vercel.app/_next/image?url=https%3A%2F%2Fapi.typedream.com%2Fv0%2Fdocument%2Fpublic%2Fffd19e6e-3cf5-49a2-985c-8086255e3a33%2F2H5X0HKQFSZYSTHAqGYlzKycibD_Project_Mush_Logo-01.png%3Fbucket%3Ddocument&w=256&q=100';
+
+    const isExplore = name === 'Explore' || props.route.name === 'Explore'
+
+    console.log(name, props.route.name)
 
     return (
         <View style={{
@@ -24,7 +26,8 @@ export default function CurrentUserCard(props) {
             justifyContent: 'space-around',
             alignItems: 'center',
             paddingTop: 10,
-            paddingBottom: 5
+            paddingBottom: 5,
+            backgroundColor: 'white',
         }}>
             <View style={{
                 display: 'flex',
@@ -32,11 +35,12 @@ export default function CurrentUserCard(props) {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}>
-                <Text style={{ fontWeight: '500' }}>Notifs</Text>
-                <Text style={{
-                    marginLeft: 10,
-                    fontWeight: '500',
-                }}>Search</Text>
+                <Text style={{}}>Notifs</Text>
+                <Pressable onPress={() => navigation.navigate('Explore')}>
+                    <Text style={{
+                        marginLeft: 10,
+                    }}>Explore</Text>
+                </Pressable>
             </View>
             <View style={{
                 display: 'flex',
@@ -68,12 +72,12 @@ export default function CurrentUserCard(props) {
                 alignItems: 'center'
             }}>
                 <Pressable onPress={() => navigation.navigate('Settings')}>
-                    <Text style={{ fontWeight: '500', }}>Settings</Text>
+                    <Text style={{}}>Settings</Text>
                 </Pressable>
                 <Pressable onPress={() => setCreatingPost(true)}>
-                    <Text style={{ marginLeft: 10, fontWeight: '500', }}>Post</Text>
+                    <Text style={{ marginLeft: 10 }}>Post</Text>
                 </Pressable>
             </View>
-        </View>
+        </View >
     )
 }

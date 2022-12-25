@@ -1,13 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { View, Text, Pressable, TextInput } from 'react-native';
 import styles from './styles'
 import Timeline from '../../TimelineScreen'
 import CurrentUserCard from '../../CurrentUserCard'
 import { addCommentQuery, headers } from '../../Generic/consts'
+import Search from '../Search'
 
 export default function HomeScreen(props) {
+  const { name } = props.route
   const [creatingPost, setCreatingPost] = useState(false)
   const [commentText, setCommentText] = useState('')
+  const isSearching = name === 'Explore'
 
   async function handlePostAdd() {
     try {
@@ -29,9 +32,11 @@ export default function HomeScreen(props) {
     }
   }
 
+  const dontShowTimeline = isSearching
+
   return (
     <View style={styles.container}>
-      <CurrentUserCard setCreatingPost={setCreatingPost} creatingPost={creatingPost} />
+      <CurrentUserCard setCreatingPost={setCreatingPost} creatingPost={creatingPost} {...props}/>
       {creatingPost && (<>
         < TextInput
           onChangeText={setCommentText}
@@ -53,7 +58,8 @@ export default function HomeScreen(props) {
           </Pressable>
         </View>
       </>)}
-      <Timeline {...props} />
+      <Timeline {...props} dontShow={dontShowTimeline} />
+      <Search {...props} />
     </View>
   );
 }

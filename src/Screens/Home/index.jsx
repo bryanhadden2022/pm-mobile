@@ -27,9 +27,10 @@ export default function Home(props) {
                 }}
             />
             <Tab.Screen
-                name="Search"
+                name="Explore"
                 component={HomeScreen}
                 options={{
+                    title: 'Explore',
                     tabBarIcon: () => <></>
                 }}
             />
