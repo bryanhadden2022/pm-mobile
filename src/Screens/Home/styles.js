@@ -38,7 +38,6 @@ export default styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-end',
-        marginTop: 15
     },
     submit: {
         backgroundColor: 'white',

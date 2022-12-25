@@ -36,7 +36,7 @@ export default function HomeScreen(props) {
 
   return (
     <View style={styles.container}>
-      <CurrentUserCard setCreatingPost={setCreatingPost} creatingPost={creatingPost} {...props}/>
+      <CurrentUserCard setCreatingPost={setCreatingPost} creatingPost={creatingPost} {...props} />
       {creatingPost && (<>
         < TextInput
           onChangeText={setCommentText}
@@ -44,16 +44,27 @@ export default function HomeScreen(props) {
           multiline={true}
           numberOfLines={10}
         />
-        <View style={{ ...styles.settingContainer, marginBottom: 15, flexDirection: 'row' }}>
+        <View style={{
+          ...styles.settingContainer, flexDirection: 'row', backgroundColor: 'white', padding: 10
+        }}>
           <Pressable
             onPress={() => setCreatingPost(false)}
-            style={styles.submit}>
-            <Text style={styles.submitText}>Cancel</Text>
+            style={{
+              ...styles.submit,
+              borderColor: 'red',
+              // borderColor: 'lightgray',
+            }}>
+            <Text style={{ ...styles.submitText, color: 'red' }}>Cancel</Text>
           </Pressable>
           <View style={{ width: 15 }}></View>
           <Pressable
+            disabled={commentText.length === 0}
             onPress={() => handlePostAdd()}
-            style={{ ...styles.submit, backgroundColor: '#f4c430' }}>
+            style={{
+              ...styles.submit,
+              backgroundColor: commentText.length === 0 ? 'lightgray' : '#f4c430',
+              borderColor: 'lightgray',
+            }}>
             <Text style={{ ...styles.submitText, color: 'white' }}>Post</Text>
           </Pressable>
         </View>
